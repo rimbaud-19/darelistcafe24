@@ -1,0 +1,130 @@
+
+<h2 class="sr-only">다래 제품 포함 주문 일자별 타임라인 (수량 포함)</h2>
+<style>
+.day-block { margin-bottom: 20px; }
+.day-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.day-label { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.day-count { font-size: 12px; color: var(--color-text-info); background: var(--color-background-info); padding: 2px 10px; border-radius: var(--border-radius-md); }
+.day-wd { font-size: 13px; color: var(--color-text-secondary); }
+.order-row { display: flex; gap: 8px; padding: 5px 0 5px 12px; font-size: 13px; line-height: 1.6; align-items: baseline; }
+.buyer { font-weight: 500; color: var(--color-text-primary); min-width: 90px; flex-shrink: 0; }
+.darae-tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: var(--border-radius-md); margin-right: 3px; }
+.tag-sun { background: var(--color-background-info); color: var(--color-text-info); }
+.tag-amp { background: #E1F5EE; color: #0F6E56; }
+.tag-pack { background: #FAECE7; color: #993C1D; }
+.qty { font-size: 11px; font-weight: 500; color: var(--color-text-warning); background: var(--color-background-warning); padding: 0px 5px; border-radius: var(--border-radius-md); margin-left: 1px; }
+.other-items { color: var(--color-text-secondary); font-size: 12px; }
+@media (prefers-color-scheme: dark) {
+  .tag-amp { background: #085041; color: #9FE1CB; }
+  .tag-pack { background: #4A1B0C; color: #F5C4B3; }
+}
+</style>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px;">
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem;">
+    <div style="font-size: 13px; color: var(--color-text-secondary);">다래 포함 주문</div>
+    <div style="font-size: 24px; font-weight: 500;">31건</div>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem;">
+    <div style="font-size: 13px; color: var(--color-text-secondary);">다래 총 판매 수량</div>
+    <div style="font-size: 24px; font-weight: 500;">42개</div>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem;">
+    <div style="font-size: 13px; color: var(--color-text-secondary);">2개+ 구매 고객</div>
+    <div style="font-size: 24px; font-weight: 500;">10명</div>
+  </div>
+</div>
+
+<div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+  <span><span class="darae-tag tag-sun">선앰플</span></span>
+  <span><span class="darae-tag tag-amp">앰플</span></span>
+  <span><span class="darae-tag tag-pack">팩클렌저</span></span>
+  <span><span class="qty">×2</span> = 수량 2개 이상</span>
+</div>
+
+<div id="timeline"></div>
+
+<script>
+const data = [
+  { date: '3/24', wd: '화', orders: [
+    { name: '최다해', darae: [{t:'선앰플',q:1}], others: ['설거지워싱바 150g'] }
+  ]},
+  { date: '3/25', wd: '수', orders: [
+    { name: '이다혜', darae: [{t:'앰플',q:1}], others: ['캑터스 퍼퓸바 세트'] },
+    { name: '김누리', darae: [{t:'선앰플',q:1},{t:'앰플',q:1}], others: ['플라워 가든 퍼퓸바 세트', '베지 워싱바 세트', '캑터스 퍼퓸바 세트'] }
+  ]},
+  { date: '3/28', wd: '토', orders: [
+    { name: '정미라', darae: [{t:'선앰플',q:1}], others: ['곤약스펀지 세안용'] }
+  ]},
+  { date: '3/29', wd: '일', orders: [
+    { name: '김주원', darae: [{t:'앰플',q:1}], others: ['올인원 퍼퓸바 옴므 ×2'] },
+    { name: '오은주', darae: [{t:'선앰플',q:1}], others: ['식기세척기 세제 ×2'] }
+  ]},
+  { date: '3/30', wd: '월', orders: [
+    { name: '강노윤', darae: [{t:'앰플',q:1}], others: ['여행용키트', '트리트먼트바', '샴푸바'] }
+  ]},
+  { date: '3/31', wd: '화', orders: [
+    { name: '고주연', darae: [{t:'선앰플',q:1}], others: [] }
+  ]},
+  { date: '4/1', wd: '수', orders: [
+    { name: '유나래', darae: [{t:'앰플',q:1}], others: ['핸드크림 시어버터 무향 ×3'] },
+    { name: '권혜인', darae: [{t:'앰플',q:1}], others: [] }
+  ]},
+  { date: '4/2', wd: '목', orders: [
+    { name: '최민희', darae: [{t:'선앰플',q:1}], others: [] }
+  ]},
+  { date: '4/3', wd: '금', orders: [
+    { name: '박경혜', darae: [{t:'선앰플',q:1}], others: ['삼베비누망'] },
+    { name: '박주연', darae: [{t:'앰플',q:1},{t:'선앰플',q:1}], others: [] },
+    { name: '이승희', darae: [{t:'선앰플',q:1},{t:'앰플',q:1}], others: ['멀티 클리너 프로'] }
+  ]},
+  { date: '4/4', wd: '토', orders: [
+    { name: '박서연', darae: [{t:'선앰플',q:1}], others: ['바디바 레몬그라스', '린스바', '샴푸바'] },
+    { name: '오단비', darae: [{t:'선앰플',q:2}], others: [] }
+  ]},
+  { date: '4/5', wd: '일', orders: [
+    { name: '정이숙', darae: [{t:'선앰플',q:1}], others: ['카프리 선샤인'] },
+    { name: '송윤서', darae: [{t:'선앰플',q:1}], others: [] },
+    { name: '김수미', darae: [{t:'선앰플',q:2}], others: [] },
+    { name: '김정희', darae: [{t:'앰플',q:3}], others: [] }
+  ]},
+  { date: '4/6', wd: '월', orders: [
+    { name: '허선아', darae: [{t:'선앰플',q:3}], others: [] }
+  ]},
+  { date: '4/7', wd: '화', orders: [
+    { name: '이명아', darae: [{t:'선앰플',q:1}], others: [] },
+    { name: '김은옥', darae: [{t:'선앰플',q:1},{t:'앰플',q:1}], others: [] }
+  ]},
+  { date: '4/8', wd: '수', orders: [
+    { name: '이지이', darae: [{t:'선앰플',q:2}], others: [] },
+    { name: '박미연', darae: [{t:'선앰플',q:1}], others: ['가꿈비누 바질', '가꿈비누 페퍼민트'] }
+  ]},
+  { date: '4/9', wd: '목', orders: [
+    { name: '정은영', darae: [{t:'선앰플',q:1}], others: [] },
+    { name: '최선희안나뷰', darae: [{t:'선앰플',q:1},{t:'앰플',q:1},{t:'팩클렌저',q:1}], others: [] },
+    { name: '차미경', darae: [{t:'선앰플',q:1}], others: [] },
+    { name: '김나연', darae: [{t:'선앰플',q:1}], others: ['핸드크림 시어버터 무향'] },
+    { name: '조연아', darae: [{t:'선앰플',q:1}], others: [] }
+  ]},
+  { date: '4/10', wd: '금', orders: [
+    { name: '이후주', darae: [{t:'선앰플',q:2}], others: [] }
+  ]}
+];
+
+const tagClass = { '선앰플': 'tag-sun', '앰플': 'tag-amp', '팩클렌저': 'tag-pack' };
+const container = document.getElementById('timeline');
+
+data.forEach(day => {
+  let html = `<div class="day-block"><div class="day-header"><span class="day-label">${day.date}</span><span class="day-wd">${day.wd}요일</span><span class="day-count">${day.orders.length}건</span></div>`;
+  day.orders.forEach(o => {
+    let tags = o.darae.map(d => {
+      let qtyTag = d.q >= 2 ? `<span class="qty">×${d.q}</span>` : '';
+      return `<span class="darae-tag ${tagClass[d.t]}">${d.t}</span>${qtyTag}`;
+    }).join(' ');
+    let others = o.others.length > 0 ? `<span class="other-items"> + ${o.others.join(', ')}</span>` : '';
+    html += `<div class="order-row"><span class="buyer">${o.name}</span><div>${tags}${others}</div></div>`;
+  });
+  html += '</div>';
+  container.innerHTML += html;
+});
+</script>
